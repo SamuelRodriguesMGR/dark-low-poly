@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://bn0f6mcq6yyiq"]
 
 [ext_resource type="PackedScene" uid="uid://crgaalfmwvhgq" path="res://Scenes/Locations/location.tscn" id="1_ebmjs"]
+[ext_resource type="PackedScene" uid="uid://d0qtukv3qua6g" path="res://Scenes/Characters/Player/player.tscn" id="2_qxrlw"]
 
 [sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_wrm1d"]
 
@@ -12,7 +13,6 @@ background_mode = 2
 sky = SubResource("Sky_qxrlw")
 ssao_enabled = true
 ssil_enabled = true
-sdfgi_enabled = true
 
 [node name="Game" type="Node3D" unique_id=241953144]
 
@@ -21,9 +21,10 @@ environment = SubResource("Environment_ebmjs")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=913976502]
 transform = Transform3D(1, 0, 0, 0, 0.6087614, 0.7933533, 0, -0.7933533, 0.6087614, 0, 13, 0)
+light_energy = 0.75
+shadow_enabled = true
 
 [node name="Location" parent="." unique_id=234637573 instance=ExtResource("1_ebmjs")]
 
-[node name="Camera3D" type="Camera3D" parent="." unique_id=854427229]
-transform = Transform3D(0.70710677, -0.49999997, 0.49999997, 0, 0.70710677, 0.70710677, -0.70710677, -0.49999997, 0.49999997, 10, 10, 10)
-fov = 100.0
+[node name="Player" parent="." unique_id=1386123188 instance=ExtResource("2_qxrlw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.6865473, 1.5, 3.1801004)

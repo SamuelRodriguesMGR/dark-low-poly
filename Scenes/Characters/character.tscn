@@ -1,3 +1,8 @@
 [gd_scene format=3 uid="uid://blyo4hwcycwp1"]
 
+[ext_resource type="Script" uid="uid://b13qwbpntp52q" path="res://Scenes/Characters/character.gd" id="1_vu0vm"]
+
 [node name="Character" type="CharacterBody3D" unique_id=1386123188]
+script = ExtResource("1_vu0vm")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=576416639]

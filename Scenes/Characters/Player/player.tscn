@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://d0qtukv3qua6g"]
+
+[ext_resource type="PackedScene" uid="uid://blyo4hwcycwp1" path="res://Scenes/Characters/character.tscn" id="1_27cb7"]
+[ext_resource type="Script" uid="uid://4fgwf5btm1lr" path="res://Scenes/Characters/Player/player.gd" id="2_lyjr2"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_27cb7"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_vu0vm"]
+
+[node name="Player" unique_id=1386123188 instance=ExtResource("1_27cb7")]
+script = ExtResource("2_lyjr2")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." index="0" unique_id=944970951]
+mesh = SubResource("CapsuleMesh_27cb7")
+
+[node name="CollisionShape3D" parent="." index="1" unique_id=576416639]
+shape = SubResource("CapsuleShape3D_vu0vm")
+
+[node name="Body" type="Node3D" parent="." index="2" unique_id=863722696]
+
+[node name="Head" type="Node3D" parent="Body" index="0" unique_id=799390087]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.51, 0)
+
+[node name="Camera3D" type="Camera3D" parent="Body/Head" index="0" unique_id=1858362659]
+unique_name_in_owner = true
+current = true
+fov = 100.0
