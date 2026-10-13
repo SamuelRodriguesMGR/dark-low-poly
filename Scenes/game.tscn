@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://d0qtukv3qua6g" path="res://Scenes/Characters/Player/player.tscn" id="2_qxrlw"]
 
 [sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_wrm1d"]
+rayleigh_color = Color(0.20161992, 0.43235528, 1.92523e-07, 1)
 
 [sub_resource type="Sky" id="Sky_qxrlw"]
 sky_material = SubResource("PhysicalSkyMaterial_wrm1d")
@@ -12,12 +13,26 @@ sky_material = SubResource("PhysicalSkyMaterial_wrm1d")
 background_mode = 2
 sky = SubResource("Sky_qxrlw")
 ssao_enabled = true
+ssao_radius = 4.0
+ssao_intensity = 4.0
 ssil_enabled = true
+sdfgi_enabled = true
+sdfgi_use_occlusion = true
+glow_enabled = true
+glow_bloom = 0.1
+glow_blend_mode = 0
+glow_hdr_threshold = 0.6
+glow_hdr_scale = 1.5
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.025
 
 [node name="Game" type="Node3D" unique_id=241953144]
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1749843112]
 transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+light_energy = 0.5
+light_volumetric_fog_energy = 7.0
+light_angular_distance = 0.7
 shadow_enabled = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1476715830]

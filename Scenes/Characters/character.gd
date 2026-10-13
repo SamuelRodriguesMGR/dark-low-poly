@@ -9,7 +9,7 @@ const FRICTION : float = 0.1
 ##Чем выше этот параметр, тем быстрее скорость движения накапливается до нужной (при ходьбе или беге)
 @export var acceleration: float = 12.0
 ##Чем ниже этот параметр, тем дольше останавливается
-@export var deceleration: float = 16.0
+@export var deceleration: float = 22.0
 
 @onready var visual_root: Node3D = get_node("VisualRoot")
 
@@ -31,9 +31,6 @@ func _physics_process(delta):
 
 # Movement
 func _handle_movement(delta: float) -> void:
-	if move_direction.length_squared() > 1.0:
-		move_direction = move_direction.normalized()
-
 	var target_velocity: Vector3 = move_direction * movement_speed
 
 	var current_acceleration := (

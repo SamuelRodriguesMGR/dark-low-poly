@@ -1,0 +1,46 @@
+[gd_resource type="AnimationNodeBlendTree" format=3 uid="uid://24mnohxib5k3"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_apx8m"]
+animation = &"Human_Atk_1h_Sword_01"
+
+[sub_resource type="AnimationNodeOneShot" id="AnimationNodeOneShot_fu1fx"]
+fadein_time = 0.15
+fadeout_time = 0.2
+
+[sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_1mdwi"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_qqvsf"]
+animation = &"Human_Idle_empty"
+
+[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_8gg06"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_1mdwi"]
+animation = &"Human_Battle_Roll"
+
+[sub_resource type="AnimationNodeOneShot" id="AnimationNodeOneShot_dxcao"]
+fadein_time = 0.05
+fadeout_time = 0.1
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_dxcao"]
+animation = &"Human_Run_empty"
+
+[resource]
+graph_offset = Vector2(-254.99388, 646.66315)
+nodes/output/position = Vector2(1380, 780)
+nodes/Idle/node = SubResource("AnimationNodeAnimation_qqvsf")
+nodes/Idle/position = Vector2(-140, 840)
+nodes/LocomotionBlend/node = SubResource("AnimationNodeBlend2_8gg06")
+nodes/LocomotionBlend/position = Vector2(200, 820)
+nodes/Run/node = SubResource("AnimationNodeAnimation_dxcao")
+nodes/Run/position = Vector2(-140, 1380)
+nodes/AttackOneShot/node = SubResource("AnimationNodeOneShot_fu1fx")
+nodes/AttackOneShot/position = Vector2(980, 760)
+nodes/Atk1/node = SubResource("AnimationNodeAnimation_apx8m")
+nodes/Atk1/position = Vector2(560, 1440)
+nodes/AttackSpeed/node = SubResource("AnimationNodeTimeScale_1mdwi")
+nodes/AttackSpeed/position = Vector2(840, 1120)
+nodes/Roll/node = SubResource("AnimationNodeAnimation_1mdwi")
+nodes/Roll/position = Vector2(220, 1360)
+nodes/RollOneShot/node = SubResource("AnimationNodeOneShot_dxcao")
+nodes/RollOneShot/position = Vector2(500, 840)
+node_connections = [&"output", 0, &"AttackOneShot", &"LocomotionBlend", 0, &"Idle", &"LocomotionBlend", 1, &"Run", &"AttackOneShot", 0, &"RollOneShot", &"AttackOneShot", 1, &"AttackSpeed", &"AttackSpeed", 0, &"Atk1", &"RollOneShot", 0, &"LocomotionBlend", &"RollOneShot", 1, &"Roll"]

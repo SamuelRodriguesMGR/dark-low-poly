@@ -14,8 +14,8 @@ const CAMERA_TILT_SPEED : float = 4
 
 
 @export_category("Player Movement")
-@export var walk_speed: float = 5.5
-@export var sprint_speed: float = 5.5
+@export var walk_speed: float = 5
+@export var sprint_speed: float = 7.5
 @export var jump_velocity: float = 7.5
 
 # Nodes
@@ -51,6 +51,7 @@ func _physics_process(delta):
 		_player_movement()
 		_update_jump_buffer(delta)
 		_handle_jump()
+		_handle_roll()
 	else:
 		move_direction = Vector3.ZERO
 		jump_buffer_timer = 0.0
@@ -64,7 +65,8 @@ func _physics_process(delta):
 	_headbob_effect(delta)
 	_title_effect(delta)
 	
-
+	
+##Передвижение
 func _player_movement() -> void:
 	var input_dir := Input.get_vector(&"left", &"right", &"up", &"down")
 	
@@ -83,7 +85,14 @@ func _handle_jump() -> void:
 	
 	if Input.is_action_just_released(&"jump") and velocity.y > 0.0:
 		velocity.y *= 0.5
+
+
+##Перекат
+func _handle_roll() -> void:
+	if Input.is_action_just_released(&"roll") and is_on_floor():
 		
+		velocity += move_direction * 5
+
 
 ##Даёт возможность прыгнуть, если нажал слишком поздно
 func _update_coyote_time(delta: float) -> void:

@@ -2,25 +2,27 @@ extends FiniteStateMachine
 
 
 
-const LOCOMOTION_BLEND: StringName = "parameters/LocomotionBlend/blend_amount"
-const ATTACK_REQUEST: StringName = "parameters/AttackOneShot/request"
-const ATTACK_ACTIVE: StringName = "parameters/AttackOneShot/active"
-
+const LOCOMOTION_BLEND: StringName = &"parameters/LocomotionBlend/blend_amount"
+const ATTACK_REQUEST: StringName = &"parameters/AttackOneShot/request"
+const ATTACK_ACTIVE: StringName = &"parameters/AttackOneShot/active"
+const ROLL_REQUEST: StringName = &"parameters/RollOneShot/request"
+const ROLL_ACTIVE: StringName = &"parameters/RollOneShot/active"
+	
 @onready var animation_tree: AnimationTree = parent.get_node("AnimationTree")
 
-var blend_speed: float = 6.0
+var blend_speed: float = 6.0 
 var run_value: float = 0.0
 var previous_can_move: bool = true
-var lock_movement_during_attack: bool = true
+var lock_movement_during_attack: bool = true 
 
 
 func _init() -> void:
 	_add_state("locomotion")
 	_add_state("attack")
+	_add_state("roll")
 
 
 func _ready() -> void:
-	animation_tree.active = true
 	set_state(states.locomotion)
 
 
@@ -37,15 +39,25 @@ func _get_transition() -> int:
 				and Input.is_action_just_pressed(&"attack")
 			):
 				return states.attack
+			
+			if (
+				parent.can_move
+				and parent.is_on_floor()
+				and Input.is_action_just_pressed(&"roll")
+			):
+				return states.roll
 
 		states.attack:
-			var attack_active: bool = animation_tree.get(
-				ATTACK_ACTIVE
-			)
+			var attack_active: bool = animation_tree.get(ATTACK_ACTIVE)
 
 			if not attack_active:
 				return states.locomotion
-
+		
+		states.roll:
+			var roll_active: bool = animation_tree.get(ROLL_ACTIVE)
+			if not roll_active:
+				return states.locomotion
+				
 	return -1
 
 
@@ -64,7 +76,12 @@ func _enter_state(_previous_state: int, new_state: int) -> void:
 				ATTACK_REQUEST,
 				AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE
 			)
-
+		
+		states.roll:
+			animation_tree.set(
+				ROLL_REQUEST,
+				AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE
+			)
 
 func _exit_state(exited_state: int) -> void:
 	if exited_state == states.attack:
@@ -73,10 +90,17 @@ func _exit_state(exited_state: int) -> void:
 
 # AnimationTree
 func _update_locomotion(delta: float) -> void:
-	var target_value := 0.0
+	var horizontal_speed := Vector2(
+		parent.velocity.x,
+		parent.velocity.z
+	).length()
 
-	if not parent.move_direction.is_zero_approx():
-		target_value = 1.0
+	# Скорость, при которой Blend2 полностью переключается на Run.
+	var target_value := clampf(
+		horizontal_speed / 7.5,
+		0.0,
+		1.0
+	)
 
 	var weight := 1.0 - exp(-blend_speed * delta)
 
