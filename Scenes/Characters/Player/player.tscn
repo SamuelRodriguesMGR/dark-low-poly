@@ -2,27 +2,40 @@
 
 [ext_resource type="PackedScene" uid="uid://blyo4hwcycwp1" path="res://Scenes/Characters/character.tscn" id="1_27cb7"]
 [ext_resource type="Script" uid="uid://4fgwf5btm1lr" path="res://Scenes/Characters/Player/player.gd" id="2_lyjr2"]
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_27cb7"]
+[ext_resource type="Script" uid="uid://d0br63qoixvr1" path="res://Scenes/Characters/Player/ThirdPersonCamera.gd" id="3_siygm"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_vu0vm"]
 
+[sub_resource type="SphereShape3D" id="SphereShape3D_lyjr2"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_27cb7"]
+
 [node name="Player" unique_id=1386123188 instance=ExtResource("1_27cb7")]
 script = ExtResource("2_lyjr2")
+walk_speed = 5.0
+sprint_speed = 7.5
+jump_velocity = 5.0
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="." index="0" unique_id=944970951]
-mesh = SubResource("CapsuleMesh_27cb7")
-
-[node name="CollisionShape3D" parent="." index="1" unique_id=576416639]
+[node name="CollisionShape3D" parent="." index="0" unique_id=576416639]
 shape = SubResource("CapsuleShape3D_vu0vm")
 
-[node name="Body" type="Node3D" parent="." index="2" unique_id=863722696]
+[node name="CameraPivot" type="Node3D" parent="." index="1" unique_id=1909787148]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+script = ExtResource("3_siygm")
 
-[node name="Head" type="Node3D" parent="Body" index="0" unique_id=799390087]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.51, 0)
+[node name="SpringArm3D" type="SpringArm3D" parent="CameraPivot" index="0" unique_id=962643316]
+shape = SubResource("SphereShape3D_lyjr2")
+spring_length = 4.0
+margin = 0.15
 
-[node name="Camera3D" type="Camera3D" parent="Body/Head" index="0" unique_id=1858362659]
+[node name="Camera3D" type="Camera3D" parent="CameraPivot/SpringArm3D" index="0" unique_id=324347842]
 unique_name_in_owner = true
-current = true
-fov = 100.0
+fov = 65.0
+
+[node name="CSGBox3D" type="CSGBox3D" parent="VisualRoot" parent_id_path=PackedInt32Array(274596164) index="0" unique_id=1673420629]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.03655827, 0, -0.63431895)
+size = Vector3(0.4, 0.4, 0.4)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="VisualRoot/CSGBox3D" index="0" unique_id=944970951]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.03655827, 0, 0.63431895)
+mesh = SubResource("CapsuleMesh_27cb7")

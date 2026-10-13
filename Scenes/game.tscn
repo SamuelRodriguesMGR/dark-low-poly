@@ -20,7 +20,7 @@ ssil_enabled = true
 environment = SubResource("Environment_ebmjs")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=913976502]
-transform = Transform3D(1, 0, 0, 0, 0.6087614, 0.7933533, 0, -0.7933533, 0.6087614, 0, 13, 0)
+transform = Transform3D(0.7701119, -0.50608724, 0.38833427, 1.3706938e-08, 0.6087615, 0.7933533, -0.637909, -0.61097085, 0.4688145, 0, 13, 0)
 light_energy = 0.75
 shadow_enabled = true
 
@@ -28,3 +28,6 @@ shadow_enabled = true
 
 [node name="Player" parent="." unique_id=1386123188 instance=ExtResource("2_qxrlw")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.6865473, 1.5, 3.1801004)
+walk_speed = 5.0
+sprint_speed = 7.5
+jump_velocity = 5.0

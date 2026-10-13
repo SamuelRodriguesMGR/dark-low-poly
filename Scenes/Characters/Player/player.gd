@@ -12,15 +12,23 @@ const HEADBOB_FREQUENCY : float = 2.4
 const CAMERA_TILT_AMOUNT : float = 2
 const CAMERA_TILT_SPEED : float = 4
 
-# variables
-var coyote_timer : float = 0.0
-var jump_buffer_timer := 0.0
-var headbob_timer : float = 0.0
+
+@export_category("Player Movement")
+@export var walk_speed: float = 5.0
+@export var sprint_speed: float = 7.5
+@export var jump_velocity: float = 5.0
 
 # Nodes
 @onready var camera : Camera3D = get_node(^"%Camera3D")
-@onready var body : Node3D = get_node(^"Body")
-@onready var head : Node3D = get_node(^"%Head") 
+@onready var camera_pivot: Node3D = $CameraPivot
+@onready var visual_root: Node3D = $VisualRoot
+
+# variables
+var coyote_timer : float = 0.0
+var jump_buffer_timer : float = 0.0
+var headbob_timer : float = 0.0
+var is_sprinting : bool = false
+
 
 func _ready() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
@@ -32,73 +40,40 @@ func _input(event: InputEvent) -> void:
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 		return
 
-	if event is InputEventMouseButton:
-		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-
-	if not can_move:
-		return
-
-	if event is InputEventMouseMotion:
-		if Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
-			_rotate_camera(event.relative)
+	elif event is InputEventMouseButton and event.pressed:
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 
-func _rotate_camera(mouse_motion: Vector2) -> void:
-	body.rotate_y(-mouse_motion.x * MOUSE_SENSITIVITY)
-
-	head.rotate_x(-mouse_motion.y * MOUSE_SENSITIVITY)
-
-	head.rotation.x = clamp(
-		head.rotation.x,
-		deg_to_rad(-90.0),
-		deg_to_rad(90.0)
-	)
-	
-	
 ##Процессы больше с движением, прыжком, гравитацией
 func _physics_process(delta):
-	if not can_move:
-		_stop_movement(delta)
-		move_and_slide()
-		return
-		
-	_handle_movement(delta)
-	
 	_update_coyote_time(delta)
-	_update_jump_buffer(delta)
-	_handle_jump()
 	
-	_apply_gravity(delta)
+	if can_move:
+		_player_movement()
+		_update_jump_buffer(delta)
+		_handle_jump()
+	else:
+		move_direction = Vector3.ZERO
+		jump_buffer_timer = 0.0
 	
-	move_and_slide()
+	super._physics_process(delta)
+	
+	# Визуализация движения при поворотах
+	_rotate_visual(move_direction, delta)
+	#_update_animation()
 	
 	_headbob_effect(delta)
 	_title_effect(delta)
 	
-	
-func _handle_movement(delta: float) -> void:
+
+func _player_movement() -> void:
 	var input_dir := Input.get_vector(&"left", &"right", &"up", &"down")
-	move_direction = (body.global_transform.basis * Vector3(input_dir.x, 0.0, input_dir.y)).normalized()
-
-	var target_velocity := move_direction * (sprint_speed if Input.is_action_pressed(&"run") else walk_speed)
-
-	var current_acceleration := acceleration
 	
-	# плавная остановка
-	if move_direction == Vector3.ZERO:
-		current_acceleration = deceleration
+	is_sprinting = (Input.is_action_pressed(&"run") and not input_dir.is_zero_approx())
+	movement_speed = (sprint_speed if is_sprinting else walk_speed)
+	# Направление игрока за камерой
+	move_direction = _get_camera_relative_direction(input_dir)
 
-	velocity.x = move_toward(
-		velocity.x,
-		target_velocity.x,
-		current_acceleration * delta
-	)
-
-	velocity.z = move_toward(
-		velocity.z,
-		target_velocity.z,
-		current_acceleration * delta
-	)
 
 ##Прыжок
 func _handle_jump() -> void:
@@ -155,3 +130,53 @@ func _title_effect(delta) -> void:
 		target_tilt,
 		CAMERA_TILT_SPEED * delta
 	)
+	
+
+func _get_camera_relative_direction(input_direction: Vector2) -> Vector3:
+	var camera_basis: Basis = camera_pivot.global_transform.basis
+
+	var forward: Vector3 = -camera_basis.z
+	var right: Vector3 = camera_basis.x
+
+	# Движение происходит только по горизонтали.
+	forward.y = 0.0
+	right.y = 0.0
+
+	forward = forward.normalized()
+	right = right.normalized()
+
+	return (
+		right * input_direction.x
+		- forward * input_direction.y
+	).normalized()
+	
+	
+func _rotate_visual(direction: Vector3, delta: float) -> void:
+	if direction.is_zero_approx():
+		return
+
+	var target_yaw := atan2(
+		-direction.x,
+		-direction.z
+	)
+
+	var weight := 1.0 - exp(-12.0 * delta)
+
+	visual_root.rotation.y = lerp_angle(
+		visual_root.rotation.y,
+		target_yaw,
+		weight
+	)
+	
+# Animation   TEST
+#func _update_animation() -> void:
+	#var next_state := "Idle"
+	#var horizontal_speed := Vector2(velocity.x, velocity.z).length()
+#
+	#if not is_on_floor():
+		#next_state = "Jump" if velocity.y > 0.0 else "Fall"
+	#elif horizontal_speed > 0.1:
+		#next_state = "Run" if is_sprinting else "Walk"
+#
+	#if animation_playback.get_current_node() != next_state:
+		#animation_playback.travel(next_state)
