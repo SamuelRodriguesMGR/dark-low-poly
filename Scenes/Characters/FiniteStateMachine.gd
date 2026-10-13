@@ -1,19 +1,24 @@
-class_name FiniteStateMachine extends Node
+class_name FiniteStateMachine
+extends Node
 
-var states : Dictionary = {}
-var previous_state : int = -1
-var state : int = -1: set = set_state
 
-@onready var parent : CharacterBody3D = get_parent()
-@onready var animation_player : AnimationPlayer = parent.get_node("AnimationPlayer")
+var states: Dictionary = {}
+var previous_state: int = -1
+var state: int = -1: set = set_state
+
+@onready var parent: Character = get_parent()
 
 
 func _physics_process(delta: float) -> void:
-	if state != -1:
-		_state_logic(delta)
-		var transition: int = _get_transition()
-		if transition != -1:
-			set_state(transition)
+	if state == -1:
+		return
+
+	_state_logic(delta)
+
+	var transition := _get_transition()
+
+	if transition != -1 and transition != state:
+		set_state(transition)
 
 
 func _state_logic(_delta: float) -> void:
@@ -29,9 +34,15 @@ func _add_state(new_state: String) -> void:
 
 
 func set_state(new_state: int) -> void:
-	_exit_state(state)
+	if new_state == state:
+		return
+
+	if state != -1:
+		_exit_state(state)
+
 	previous_state = state
 	state = new_state
+
 	_enter_state(previous_state, state)
 
 

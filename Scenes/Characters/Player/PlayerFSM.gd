@@ -1,0 +1,92 @@
+extends FiniteStateMachine
+
+
+
+const LOCOMOTION_BLEND: StringName = "parameters/LocomotionBlend/blend_amount"
+const ATTACK_REQUEST: StringName = "parameters/AttackOneShot/request"
+const ATTACK_ACTIVE: StringName = "parameters/AttackOneShot/active"
+
+@onready var animation_tree: AnimationTree = parent.get_node("AnimationTree")
+
+var blend_speed: float = 6.0
+var run_value: float = 0.0
+var previous_can_move: bool = true
+var lock_movement_during_attack: bool = true
+
+
+func _init() -> void:
+	_add_state("locomotion")
+	_add_state("attack")
+
+
+func _ready() -> void:
+	animation_tree.active = true
+	set_state(states.locomotion)
+
+
+func _state_logic(delta: float) -> void:
+	_update_locomotion(delta)
+
+
+func _get_transition() -> int:
+	match state:
+		states.locomotion:
+			if (
+				parent.can_move
+				and parent.is_on_floor()
+				and Input.is_action_just_pressed(&"attack")
+			):
+				return states.attack
+
+		states.attack:
+			var attack_active: bool = animation_tree.get(
+				ATTACK_ACTIVE
+			)
+
+			if not attack_active:
+				return states.locomotion
+
+	return -1
+
+
+func _enter_state(_previous_state: int, new_state: int) -> void:
+	match new_state:
+		states.locomotion:
+			pass
+
+		states.attack:
+			previous_can_move = parent.can_move
+
+			if lock_movement_during_attack:
+				parent.can_move = false
+
+			animation_tree.set(
+				ATTACK_REQUEST,
+				AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE
+			)
+
+
+func _exit_state(exited_state: int) -> void:
+	if exited_state == states.attack:
+		parent.can_move = previous_can_move
+
+
+# AnimationTree
+func _update_locomotion(delta: float) -> void:
+	var target_value := 0.0
+
+	if not parent.move_direction.is_zero_approx():
+		target_value = 1.0
+
+	var weight := 1.0 - exp(-blend_speed * delta)
+
+	run_value = lerpf(
+		run_value,
+		target_value,
+		weight
+	)
+
+	animation_tree.set(
+		LOCOMOTION_BLEND,
+		run_value
+	)

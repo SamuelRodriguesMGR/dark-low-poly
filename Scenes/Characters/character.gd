@@ -11,6 +11,8 @@ const FRICTION : float = 0.1
 ##Чем ниже этот параметр, тем дольше останавливается
 @export var deceleration: float = 16.0
 
+@onready var visual_root: Node3D = get_node("VisualRoot")
+
 # variables
 var can_move: bool = true
 var move_direction: Vector3 = Vector3.ZERO

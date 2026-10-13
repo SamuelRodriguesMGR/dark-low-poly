@@ -14,14 +14,13 @@ const CAMERA_TILT_SPEED : float = 4
 
 
 @export_category("Player Movement")
-@export var walk_speed: float = 5.0
-@export var sprint_speed: float = 7.5
-@export var jump_velocity: float = 5.0
+@export var walk_speed: float = 5.5
+@export var sprint_speed: float = 5.5
+@export var jump_velocity: float = 7.5
 
 # Nodes
 @onready var camera : Camera3D = get_node(^"%Camera3D")
 @onready var camera_pivot: Node3D = $CameraPivot
-@onready var visual_root: Node3D = $VisualRoot
 
 # variables
 var coyote_timer : float = 0.0
@@ -168,15 +167,3 @@ func _rotate_visual(direction: Vector3, delta: float) -> void:
 		weight
 	)
 	
-# Animation   TEST
-#func _update_animation() -> void:
-	#var next_state := "Idle"
-	#var horizontal_speed := Vector2(velocity.x, velocity.z).length()
-#
-	#if not is_on_floor():
-		#next_state = "Jump" if velocity.y > 0.0 else "Fall"
-	#elif horizontal_speed > 0.1:
-		#next_state = "Run" if is_sprinting else "Walk"
-#
-	#if animation_playback.get_current_node() != next_state:
-		#animation_playback.travel(next_state)
