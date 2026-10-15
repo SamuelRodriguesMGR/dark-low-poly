@@ -12,6 +12,13 @@ fadeout_time = 0.2
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_qqvsf"]
 animation = &"Human_Idle_empty"
 
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_8wkdj"]
+animation = &"Human_Idle_Jump"
+
+[sub_resource type="AnimationNodeOneShot" id="AnimationNodeOneShot_8wkdj"]
+fadein_time = 0.1
+fadeout_time = 0.5
+
 [sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_8gg06"]
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_1mdwi"]
@@ -24,17 +31,19 @@ fadeout_time = 0.3
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_dxcao"]
 animation = &"Human_Run_empty"
 
+[sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_oe86t"]
+
 [sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_8wkdj"]
 
 [resource]
-graph_offset = Vector2(-336.81427, 613.2057)
+graph_offset = Vector2(-508.94434, 334.30594)
 nodes/output/position = Vector2(1380, 780)
 nodes/Idle/node = SubResource("AnimationNodeAnimation_qqvsf")
-nodes/Idle/position = Vector2(-140, 840)
+nodes/Idle/position = Vector2(-480, 680)
 nodes/LocomotionBlend/node = SubResource("AnimationNodeBlend2_8gg06")
-nodes/LocomotionBlend/position = Vector2(200, 820)
+nodes/LocomotionBlend/position = Vector2(-200, 800)
 nodes/Run/node = SubResource("AnimationNodeAnimation_dxcao")
-nodes/Run/position = Vector2(-140, 1380)
+nodes/Run/position = Vector2(-540, 920)
 nodes/AttackOneShot/node = SubResource("AnimationNodeOneShot_fu1fx")
 nodes/AttackOneShot/position = Vector2(980, 760)
 nodes/Atk1/node = SubResource("AnimationNodeAnimation_apx8m")
@@ -44,7 +53,13 @@ nodes/AttackSpeed/position = Vector2(840, 1120)
 nodes/Roll/node = SubResource("AnimationNodeAnimation_1mdwi")
 nodes/Roll/position = Vector2(140, 1360)
 nodes/RollOneShot/node = SubResource("AnimationNodeOneShot_dxcao")
-nodes/RollOneShot/position = Vector2(500, 840)
+nodes/RollOneShot/position = Vector2(560, 820)
 nodes/roll_duration/node = SubResource("AnimationNodeTimeScale_8wkdj")
 nodes/roll_duration/position = Vector2(380, 1180)
-node_connections = [&"output", 0, &"AttackOneShot", &"LocomotionBlend", 0, &"Idle", &"LocomotionBlend", 1, &"Run", &"AttackOneShot", 0, &"RollOneShot", &"AttackOneShot", 1, &"AttackSpeed", &"AttackSpeed", 0, &"Atk1", &"RollOneShot", 0, &"LocomotionBlend", &"RollOneShot", 1, &"roll_duration", &"roll_duration", 0, &"Roll"]
+nodes/Jump/node = SubResource("AnimationNodeAnimation_8wkdj")
+nodes/Jump/position = Vector2(-580, 1300)
+nodes/JumpOneShot/node = SubResource("AnimationNodeOneShot_8wkdj")
+nodes/JumpOneShot/position = Vector2(180, 840)
+nodes/TimeScale/node = SubResource("AnimationNodeTimeScale_oe86t")
+nodes/TimeScale/position = Vector2(-338.13135, 1291.4252)
+node_connections = [&"output", 0, &"AttackOneShot", &"LocomotionBlend", 0, &"Idle", &"LocomotionBlend", 1, &"Run", &"AttackOneShot", 0, &"RollOneShot", &"AttackOneShot", 1, &"AttackSpeed", &"AttackSpeed", 0, &"Atk1", &"RollOneShot", 0, &"JumpOneShot", &"RollOneShot", 1, &"roll_duration", &"roll_duration", 0, &"Roll", &"JumpOneShot", 0, &"LocomotionBlend", &"JumpOneShot", 1, &"TimeScale", &"TimeScale", 0, &"Jump"]

@@ -91,11 +91,6 @@ func _player_movement() -> void:
 
 ##Прыжок
 func _handle_jump() -> void:
-	if jump_buffer_timer > 0.0 and coyote_timer > 0.0:
-		velocity.y = jump_velocity
-		coyote_timer = 0.0
-		jump_buffer_timer = 0.0
-	
 	if Input.is_action_just_released(&"jump") and velocity.y > 0.0:
 		velocity.y *= 0.5
 
