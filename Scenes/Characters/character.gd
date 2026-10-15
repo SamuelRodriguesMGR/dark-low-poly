@@ -9,7 +9,7 @@ const FRICTION : float = 0.1
 ##Чем выше этот параметр, тем быстрее скорость движения накапливается до нужной (при ходьбе или беге)
 @export var acceleration: float = 12.0
 ##Чем ниже этот параметр, тем дольше останавливается
-@export var deceleration: float = 22.0
+@export var deceleration: float = 30.0
 
 @onready var visual_root: Node3D = get_node("VisualRoot")
 @onready var finite_state_machine = $FiniteStateMachine

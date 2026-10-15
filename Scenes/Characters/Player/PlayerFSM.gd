@@ -5,8 +5,12 @@ extends FiniteStateMachine
 const LOCOMOTION_BLEND: StringName = &"parameters/LocomotionBlend/blend_amount"
 const ATTACK_REQUEST: StringName = &"parameters/AttackOneShot/request"
 const ATTACK_ACTIVE: StringName = &"parameters/AttackOneShot/active"
+
 const ROLL_REQUEST: StringName = &"parameters/RollOneShot/request"
 const ROLL_ACTIVE: StringName = &"parameters/RollOneShot/active"
+
+const JUMP_REQUEST: StringName = &"parameters/JumpOneShot/request"
+const JUMP_ACTIVE: StringName = &"parameters/JumpOneShot/active"
 	
 @onready var animation_tree: AnimationTree = parent.get_node("AnimationTree")
 
@@ -23,6 +27,7 @@ func _init() -> void:
 	_add_state("locomotion")
 	_add_state("attack")
 	_add_state("roll")
+	_add_state("jump")
 
 
 func _ready() -> void:
@@ -49,6 +54,13 @@ func _get_transition() -> int:
 				and Input.is_action_just_pressed(&"roll")
 			):
 				return states.roll
+				
+			if (
+				parent.can_move
+				and parent.jump_buffer_timer > 0.0
+				and parent.coyote_timer > 0.0
+			):
+				return states.jump
 
 		states.attack:
 			var attack_active: bool = animation_tree.get(ATTACK_ACTIVE)
@@ -56,10 +68,16 @@ func _get_transition() -> int:
 			if not attack_active:
 				return states.locomotion
 		
+		states.jump:
+			var jump_active: bool = animation_tree.get(JUMP_ACTIVE)
+			if not jump_active and parent.is_on_floor():
+				return states.locomotion
+				
 		states.roll:
 			var roll_active: bool = animation_tree.get(ROLL_ACTIVE)
 			if not roll_active:
 				return states.locomotion
+				
 				
 	return -1
 
@@ -77,6 +95,18 @@ func _enter_state(_previous_state: int, new_state: int) -> void:
 
 			animation_tree.set(
 				ATTACK_REQUEST,
+				AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE
+			)
+			
+		states.jump:
+			# Применяем импульс прыжка
+			parent.velocity.y = parent.jump_velocity
+			# Сбрасываем таймеры, чтобы прыжок не сработал повторно
+			parent.coyote_timer = 0.0
+			parent.jump_buffer_timer = 0.0
+			# Запускаем анимацию прыжка
+			animation_tree.set(
+				JUMP_REQUEST,
 				AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE
 			)
 		
