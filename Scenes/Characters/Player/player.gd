@@ -1,16 +1,18 @@
 extends Character
 
 
+
 const MOUSE_SENSITIVITY : float = 0.007
 # прикольчики с прыжками
 const COYOTE_TIME : float = 0.1
 const JUMP_BUFFER_TIME : float = 0.15
-# качание головой
-const HEADBOB_MOVE_AMOUNT : float = 0.06
-const HEADBOB_FREQUENCY : float = 2.4
 # наклон камеры
 const CAMERA_TILT_AMOUNT : float = 2
 const CAMERA_TILT_SPEED : float = 4
+# перекаты
+const ROLL_SPEED : float = 6.5
+const ROLL_JUMP_HEIGHT : float = 2  # Высота "нырка"
+const ROLL_ACTIVE : StringName = &"parameters/RollOneShot/active"
 
 
 @export_category("Player Movement")
@@ -21,12 +23,17 @@ const CAMERA_TILT_SPEED : float = 4
 # Nodes
 @onready var camera : Camera3D = get_node(^"%Camera3D")
 @onready var camera_pivot: Node3D = $CameraPivot
+@onready var animation_tree = %AnimationTree
 
 # variables
 var coyote_timer : float = 0.0
 var jump_buffer_timer : float = 0.0
-var headbob_timer : float = 0.0
 var is_sprinting : bool = false
+
+# Roll state
+var is_invincible : bool = false
+var roll_started : bool = false  # Флаг, что перекат только начался (для fly roll)
+var iframe_duration : float = 0.4   # Неуязвимость с начала переката
 
 
 func _ready() -> void:
@@ -47,11 +54,16 @@ func _input(event: InputEvent) -> void:
 func _physics_process(delta):
 	_update_coyote_time(delta)
 	
-	if can_move:
+	# Проверяем состояние переката из FSM
+	var roll_active: bool = animation_tree.get(ROLL_ACTIVE)
+	
+	if roll_active:
+		_process_roll()
+	elif can_move:
 		_player_movement()
 		_update_jump_buffer(delta)
 		_handle_jump()
-		_handle_roll()
+		roll_started = false
 	else:
 		move_direction = Vector3.ZERO
 		jump_buffer_timer = 0.0
@@ -59,10 +71,11 @@ func _physics_process(delta):
 	super._physics_process(delta)
 	
 	# Визуализация движения при поворотах
-	_rotate_visual(move_direction, delta)
-	#_update_animation()
-	
-	_headbob_effect(delta)
+	if roll_active:
+		_rotate_visual(finite_state_machine.roll_direction, delta)
+	else:
+		_rotate_visual(move_direction, delta)
+		
 	_title_effect(delta)
 	
 	
@@ -87,12 +100,26 @@ func _handle_jump() -> void:
 		velocity.y *= 0.5
 
 
-##Перекат
-func _handle_roll() -> void:
-	if Input.is_action_just_released(&"roll") and is_on_floor():
+## Обработка переката (физика)
+func _process_roll() -> void:
+	# Fly roll: применяем только в начале переката
+	if not roll_started:
+		roll_started = true
+		is_invincible = true
 		
-		velocity += move_direction * 5
+		# Нырок: прыжок + импульс вперёд
+		velocity.y = ROLL_JUMP_HEIGHT
+		velocity.x = finite_state_machine.roll_direction.x * ROLL_SPEED
+		velocity.z = finite_state_machine.roll_direction.z * ROLL_SPEED
+	else:
+		# Продолжаем перекат с той же скоростью
+		velocity.x = finite_state_machine.roll_direction.x * ROLL_SPEED
+		velocity.z = finite_state_machine.roll_direction.z * ROLL_SPEED
+		
 
+## Вызывается из AnimationPlayer для управления неуязвимостью
+func set_invincible(value: bool) -> void:
+	is_invincible = value
 
 ##Даёт возможность прыгнуть, если нажал слишком поздно
 func _update_coyote_time(delta: float) -> void:
@@ -109,20 +136,6 @@ func _update_jump_buffer(delta) -> void:
 	else:
 		jump_buffer_timer = maxf(jump_buffer_timer - delta, 0.0)
 		
-
-##Качание камеры при ходьбе
-func _headbob_effect(delta) -> void:
-	if not is_on_floor():
-		return
-	
-	# Headbob
-	headbob_timer += delta * velocity.length()
-	camera.transform.origin = Vector3(
-		cos(headbob_timer * HEADBOB_FREQUENCY * 0.5) * HEADBOB_MOVE_AMOUNT, 
-		sin(headbob_timer * HEADBOB_FREQUENCY) * HEADBOB_MOVE_AMOUNT, 
-		0
-		)
-
 
 ## Наклон камеры влево/вправо
 func _title_effect(delta) -> void:

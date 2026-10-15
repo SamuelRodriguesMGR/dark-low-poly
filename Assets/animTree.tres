@@ -18,14 +18,16 @@ animation = &"Human_Idle_empty"
 animation = &"Human_Battle_Roll"
 
 [sub_resource type="AnimationNodeOneShot" id="AnimationNodeOneShot_dxcao"]
-fadein_time = 0.05
-fadeout_time = 0.1
+fadein_time = 0.15
+fadeout_time = 0.3
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_dxcao"]
 animation = &"Human_Run_empty"
 
+[sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_8wkdj"]
+
 [resource]
-graph_offset = Vector2(-254.99388, 646.66315)
+graph_offset = Vector2(-336.81427, 613.2057)
 nodes/output/position = Vector2(1380, 780)
 nodes/Idle/node = SubResource("AnimationNodeAnimation_qqvsf")
 nodes/Idle/position = Vector2(-140, 840)
@@ -40,7 +42,9 @@ nodes/Atk1/position = Vector2(560, 1440)
 nodes/AttackSpeed/node = SubResource("AnimationNodeTimeScale_1mdwi")
 nodes/AttackSpeed/position = Vector2(840, 1120)
 nodes/Roll/node = SubResource("AnimationNodeAnimation_1mdwi")
-nodes/Roll/position = Vector2(220, 1360)
+nodes/Roll/position = Vector2(140, 1360)
 nodes/RollOneShot/node = SubResource("AnimationNodeOneShot_dxcao")
 nodes/RollOneShot/position = Vector2(500, 840)
-node_connections = [&"output", 0, &"AttackOneShot", &"LocomotionBlend", 0, &"Idle", &"LocomotionBlend", 1, &"Run", &"AttackOneShot", 0, &"RollOneShot", &"AttackOneShot", 1, &"AttackSpeed", &"AttackSpeed", 0, &"Atk1", &"RollOneShot", 0, &"LocomotionBlend", &"RollOneShot", 1, &"Roll"]
+nodes/roll_duration/node = SubResource("AnimationNodeTimeScale_8wkdj")
+nodes/roll_duration/position = Vector2(380, 1180)
+node_connections = [&"output", 0, &"AttackOneShot", &"LocomotionBlend", 0, &"Idle", &"LocomotionBlend", 1, &"Run", &"AttackOneShot", 0, &"RollOneShot", &"AttackOneShot", 1, &"AttackSpeed", &"AttackSpeed", 0, &"Atk1", &"RollOneShot", 0, &"LocomotionBlend", &"RollOneShot", 1, &"roll_duration", &"roll_duration", 0, &"Roll"]

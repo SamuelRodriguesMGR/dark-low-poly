@@ -15,6 +15,9 @@ var run_value: float = 0.0
 var previous_can_move: bool = true
 var lock_movement_during_attack: bool = true 
 
+# Направление переката (передаётся в скрипт игрока)
+var roll_direction: Vector3 = Vector3.ZERO
+
 
 func _init() -> void:
 	_add_state("locomotion")
@@ -78,6 +81,18 @@ func _enter_state(_previous_state: int, new_state: int) -> void:
 			)
 		
 		states.roll:
+			# Определяем направление переката
+			var input_dir := Input.get_vector(&"left", &"right", &"up", &"down")
+			if input_dir.is_zero_approx():
+				# Нырок вперёд по камере
+				roll_direction = -parent.camera_pivot.global_transform.basis.z
+				roll_direction.y = 0.0
+				roll_direction = roll_direction.normalized()
+			else:
+				# Нырок в сторону ввода
+				roll_direction = parent._get_camera_relative_direction(input_dir)
+			
+			# Запускаем анимацию переката
 			animation_tree.set(
 				ROLL_REQUEST,
 				AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE

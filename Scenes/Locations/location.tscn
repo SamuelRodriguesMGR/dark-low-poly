@@ -10,7 +10,7 @@ use_collision = true
 metadata/_edit_lock_ = true
 
 [node name="Floor" type="CSGBox3D" parent="CSGCombiner3D" unique_id=1065049479]
-size = Vector3(50, 1, 50)
+size = Vector3(500, 1, 500)
 metadata/_edit_lock_ = true
 
 [node name="CSGBox3D" type="CSGBox3D" parent="CSGCombiner3D" unique_id=615502879]

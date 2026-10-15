@@ -12,18 +12,22 @@ const FRICTION : float = 0.1
 @export var deceleration: float = 22.0
 
 @onready var visual_root: Node3D = get_node("VisualRoot")
+@onready var finite_state_machine = $FiniteStateMachine
 
 # variables
 var can_move: bool = true
+var override_movement: bool = false
 var move_direction: Vector3 = Vector3.ZERO
  
 
 func _physics_process(delta):
-	if can_move:
-		_handle_movement(delta)
-	else:
-		move_direction = Vector3.ZERO
-		_stop_movement(delta)
+	# Если движение не перехвачено (например, перекатом), обрабатываем нормально
+	if not override_movement:
+		if can_move:
+			_handle_movement(delta)
+		else:
+			move_direction = Vector3.ZERO
+			_stop_movement(delta)
 	
 	_apply_gravity(delta)
 	move_and_slide()
