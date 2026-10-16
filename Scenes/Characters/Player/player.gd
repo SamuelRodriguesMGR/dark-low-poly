@@ -7,8 +7,10 @@ const MOUSE_SENSITIVITY : float = 0.007
 const COYOTE_TIME : float = 0.1
 const JUMP_BUFFER_TIME : float = 0.15
 # наклон камеры
-const CAMERA_TILT_AMOUNT : float = 2
-const CAMERA_TILT_SPEED : float = 4
+const CAMERA_TILT_AMOUNT : float = 1
+const CAMERA_TILT_SPEED : float = 2
+# плавные повороты туловищем
+const SMOOTH_ROTATE : float = 7.0
 # перекаты
 const ROLL_SPEED : float = 6.5
 const ROLL_JUMP_HEIGHT : float = 2  # Высота "нырка"
@@ -16,14 +18,14 @@ const ROLL_ACTIVE : StringName = &"parameters/RollOneShot/active"
 
 
 @export_category("Player Movement")
-@export var walk_speed: float = 5
-@export var sprint_speed: float = 7.5
-@export var jump_velocity: float = 7.5
+@export var walk_speed: float = 4.5
+@export var sprint_speed: float = 6.5
+@export var jump_velocity: float = 4.5
 
 # Nodes
 @onready var camera : Camera3D = get_node(^"%Camera3D")
 @onready var camera_pivot: Node3D = $CameraPivot
-@onready var animation_tree = %AnimationTree
+@onready var animation_tree : AnimationTree = %AnimationTree
 
 # variables
 var coyote_timer : float = 0.0
@@ -176,7 +178,7 @@ func _rotate_visual(direction: Vector3, delta: float) -> void:
 		-direction.z
 	)
 
-	var weight := 1.0 - exp(-12.0 * delta)
+	var weight := 1.0 - exp(-SMOOTH_ROTATE * delta)
 
 	visual_root.rotation.y = lerp_angle(
 		visual_root.rotation.y,
