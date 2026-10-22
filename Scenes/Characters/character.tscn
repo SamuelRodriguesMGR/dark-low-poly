@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://blyo4hwcycwp1"]
 
 [ext_resource type="Script" uid="uid://b13qwbpntp52q" path="res://Scenes/Characters/character.gd" id="1_vu0vm"]
+[ext_resource type="Script" uid="uid://b4glm7ngt80oj" path="res://Scenes/Components/health_component.gd" id="2_eu1pv"]
 
 [node name="Character" type="CharacterBody3D" unique_id=1386123188]
 script = ExtResource("1_vu0vm")
@@ -11,3 +12,7 @@ movement_speed = 3.0
 [node name="VisualRoot" type="Node3D" parent="." unique_id=274596164]
 
 [node name="FiniteStateMachine" type="Node" parent="." unique_id=557007407]
+
+[node name="HealthComponent" type="Node" parent="." unique_id=1604893288]
+script = ExtResource("2_eu1pv")
+metadata/_custom_type_script = "uid://b4glm7ngt80oj"
