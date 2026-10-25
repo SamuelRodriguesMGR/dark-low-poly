@@ -36,7 +36,6 @@ animation = &"Human_Run_empty"
 [sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_8wkdj"]
 
 [resource]
-graph_offset = Vector2(262.52454, 748.89386)
 nodes/output/position = Vector2(1380, 780)
 nodes/Idle/node = SubResource("AnimationNodeAnimation_qqvsf")
 nodes/Idle/position = Vector2(-480, 680)
