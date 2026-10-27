@@ -98,6 +98,8 @@ func _enter_state(_previous_state: int, new_state: int) -> void:
 				AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE
 			)
 			
+			parent.attack_component.activate = true
+			
 		states.jump:
 			# Применяем импульс прыжка
 			parent.velocity.y = parent.jump_velocity

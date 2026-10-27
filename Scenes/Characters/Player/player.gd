@@ -26,6 +26,7 @@ const ROLL_ACTIVE : StringName = &"parameters/RollOneShot/active"
 @onready var camera : Camera3D = get_node(^"%Camera3D")
 @onready var camera_pivot: Node3D = $CameraPivot
 @onready var animation_tree : AnimationTree = %AnimationTree
+@onready var attack_component = %AttackComponent
 
 # variables
 var coyote_timer : float = 0.0
