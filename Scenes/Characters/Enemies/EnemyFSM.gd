@@ -32,8 +32,8 @@ func _get_transition() -> int:
 		states.locomotion:
 			if (
 				parent.can_move
-				and parent.is_on_floor()
-				and Input.is_action_just_pressed(&"attack")
+				and parent.is_on_floor() and false
+				#and Input.is_action_just_pressed(&"attack")
 			):
 				return states.attack
 

@@ -6,14 +6,12 @@ class_name HealthComponent extends Node
 
 @onready var parent := get_parent()
 
-var last_attacker : Node2D
+var last_attacker : Node3D
 
-func take_damage(attacker : Node2D, damage : float) -> void: 
+func take_damage(attacker : Node3D, damage : float) -> void: 
 	last_attacker = attacker
 	health_points -= damage
-	parent.sprite.modulate += Color(
-		0.0, -1 / MAX_HEALTH_POINT, -1 / MAX_HEALTH_POINT, -0.65 / MAX_HEALTH_POINT
-		)
+	print("Health : " + str(health_points) + "Damage ^ " + str(damage))
 	if health_points <= 0:
 		parent.queue_free()
 		
