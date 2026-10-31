@@ -9,8 +9,6 @@ const JUMP_BUFFER_TIME : float = 0.15
 # наклон камеры
 const CAMERA_TILT_AMOUNT : float = 1
 const CAMERA_TILT_SPEED : float = 2
-# плавные повороты туловищем
-const SMOOTH_ROTATE : float = 7.0
 # перекаты
 const ROLL_SPEED : float = 6.5
 const ROLL_JUMP_HEIGHT : float = 2  # Высота "нырка"
@@ -169,21 +167,4 @@ func _get_camera_relative_direction(input_direction: Vector2) -> Vector3:
 		- forward * input_direction.y
 	).normalized()
 	
-	
-func _rotate_visual(direction: Vector3, delta: float) -> void:
-	if direction.is_zero_approx():
-		return
-
-	var target_yaw := atan2(
-		-direction.x,
-		-direction.z
-	)
-
-	var weight := 1.0 - exp(-SMOOTH_ROTATE * delta)
-
-	visual_root.rotation.y = lerp_angle(
-		visual_root.rotation.y,
-		target_yaw,
-		weight
-	)
 	

@@ -23,9 +23,6 @@ func _ready():
 	# Ошибка если нету коллизии
 	assert(collision != null)
 
-func body_enterned(body):
-	return body in get_overlapping_bodies()
-
 func _on_body_entered(body):
 	body_inside = true
 	timer.start(delay_attack)

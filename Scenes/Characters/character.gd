@@ -2,6 +2,8 @@ class_name Character extends CharacterBody3D
 
 
 const FRICTION : float = 0.1
+# плавные повороты туловищем
+const SMOOTH_ROTATE : float = 7.0
 
 # Setttings
 @export_category("Movement")
@@ -9,7 +11,7 @@ const FRICTION : float = 0.1
 ##Чем выше этот параметр, тем быстрее скорость движения накапливается до нужной (при ходьбе или беге)
 @export var acceleration: float = 12.0
 ##Чем ниже этот параметр, тем дольше останавливается
-@export var deceleration: float = 30.0
+@export var deceleration: float = 40.0
 
 @onready var visual_root: Node3D = get_node("VisualRoot")
 @onready var finite_state_machine = $FiniteStateMachine
@@ -73,3 +75,22 @@ func _apply_gravity(delta: float) -> void:
 	# Возвращаем игрока вверх, если он упал слишком низко
 	if global_position.y < -50.0:
 		velocity.y = 6 * 7.0
+
+
+func _rotate_visual(direction: Vector3, delta: float) -> void:
+	if direction.is_zero_approx():
+		return
+
+	var target_yaw := atan2(
+		-direction.x,
+		-direction.z
+	)
+
+	var weight := 1.0 - exp(-SMOOTH_ROTATE * delta)
+
+	visual_root.rotation.y = lerp_angle(
+		visual_root.rotation.y,
+		target_yaw,
+		weight
+	)
+	

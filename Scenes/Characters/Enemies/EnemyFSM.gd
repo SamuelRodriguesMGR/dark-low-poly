@@ -12,7 +12,6 @@ var blend_speed: float = 6.0
 var run_value: float = 0.0
 var previous_can_move: bool = true
 var lock_movement_during_attack: bool = true 
-var attack : bool = false
 
 
 func _init() -> void:
@@ -31,18 +30,19 @@ func _state_logic(delta: float) -> void:
 func _get_transition() -> int:
 	match state:
 		states.locomotion:
-			if (
-				parent.can_move
-				and parent.is_on_floor()
-				and parent.attack_component.body_enterned(parent.player)
-			):
+			if parent.can_move and parent.should_attack():
 				return states.attack
+				
+			if parent.can_move and parent.should_retreat():
+				return states.retreat
+				
 
 		states.attack:
 			var attack_active: bool = animation_tree.get(ATTACK_ACTIVE)
 
 			if not attack_active:
 				return states.locomotion
+				
 				
 	return -1
 
@@ -54,7 +54,7 @@ func _enter_state(_previous_state: int, new_state: int) -> void:
 
 		states.attack:
 			previous_can_move = parent.can_move
-
+			
 			if lock_movement_during_attack:
 				parent.can_move = false
 
@@ -63,11 +63,12 @@ func _enter_state(_previous_state: int, new_state: int) -> void:
 				AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE
 			)
 			parent.attack_component.activate = true
-
+			
 
 func _exit_state(exited_state: int) -> void:
 	if exited_state == states.attack:
 		parent.can_move = previous_can_move
+		parent.attack_component.activate = false
 
 
 # AnimationTree
