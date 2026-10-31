@@ -12,6 +12,7 @@ var blend_speed: float = 6.0
 var run_value: float = 0.0
 var previous_can_move: bool = true
 var lock_movement_during_attack: bool = true 
+var attack : bool = false
 
 
 func _init() -> void:
@@ -32,8 +33,8 @@ func _get_transition() -> int:
 		states.locomotion:
 			if (
 				parent.can_move
-				and parent.is_on_floor() and false
-				#and Input.is_action_just_pressed(&"attack")
+				and parent.is_on_floor()
+				and parent.attack_component.body_enterned(parent.player)
 			):
 				return states.attack
 
@@ -61,6 +62,7 @@ func _enter_state(_previous_state: int, new_state: int) -> void:
 				ATTACK_REQUEST,
 				AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE
 			)
+			parent.attack_component.activate = true
 
 
 func _exit_state(exited_state: int) -> void:

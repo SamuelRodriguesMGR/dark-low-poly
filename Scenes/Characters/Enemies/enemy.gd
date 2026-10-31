@@ -6,7 +6,7 @@ const SMOOTH_ROTATE : float = 7.0
 
 @onready var player : CharacterBody3D = get_tree().current_scene.get_node("Player")
 @onready var aim_raycast: RayCast3D = $RayCast3D
-
+@onready var attack_component = %AttackComponent
 
 ##Процессы больше с движением, прыжком, гравитацией
 func _physics_process(delta):
@@ -22,6 +22,9 @@ func _physics_process(delta):
 		
 		
 func _enemy_movement():
+	if !player:
+		return 
+		
 	var distance_to_player : float = (player.position - global_position).length()
 	aim_raycast.target_position = player.position - global_position
 	
@@ -47,3 +50,7 @@ func _rotate_visual(direction: Vector3, delta: float) -> void:
 		target_yaw,
 		weight
 	)
+
+
+func _on_attack_component_body_entered(body):
+	pass # Replace with function body.
