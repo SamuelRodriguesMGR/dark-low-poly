@@ -39,10 +39,16 @@ environment = SubResource("Environment_ebmjs")
 
 [node name="Player" parent="." unique_id=1386123188 instance=ExtResource("2_qxrlw")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.8399467, 0.5000019, 11.743118)
-acceleration = 16.0
-deceleration = 20.0
 sprint_speed = null
 jump_velocity = null
+acceleration = 16.0
+deceleration = 20.0
 
 [node name="Enemy" parent="." unique_id=9313651 instance=ExtResource("3_wrm1d")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.335229, 0.50000095, 4.1629066)
+
+[node name="Enemy2" parent="." unique_id=1706832101 instance=ExtResource("3_wrm1d")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.4551537, 0.5, 10.700565)
+
+[node name="Enemy3" parent="." unique_id=1695413933 instance=ExtResource("3_wrm1d")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.245416, 0.50000095, 8.244415)

@@ -67,6 +67,9 @@ func _get_transition() -> int:
 
 			if not attack_active:
 				return states.locomotion
+			
+			#if Input.is_action_just_pressed(&"roll"):
+				#return states.roll
 		
 		states.jump:
 			var jump_active: bool = animation_tree.get(JUMP_ACTIVE)
