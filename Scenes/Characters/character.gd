@@ -13,14 +13,19 @@ const SMOOTH_ROTATE : float = 7.0
 ##Чем ниже этот параметр, тем дольше останавливается
 @export var deceleration: float = 40.0
 
+@onready var collision_shape_3d = $CollisionShape3D
 @onready var visual_root: Node3D = get_node("VisualRoot")
 @onready var finite_state_machine = $FiniteStateMachine
+@onready var health_component = $HealthComponent
 
 # variables
+var is_invincible : bool = false
 var can_move: bool = true
 var override_movement: bool = false
 var move_direction: Vector3 = Vector3.ZERO
  
+signal hp_changed(new_hp)
+
 
 func _physics_process(delta):
 	# Если движение не перехвачено (например, перекатом), обрабатываем нормально

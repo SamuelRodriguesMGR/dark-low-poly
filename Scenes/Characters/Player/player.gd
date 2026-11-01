@@ -25,6 +25,7 @@ const ROLL_ACTIVE : StringName = &"parameters/RollOneShot/active"
 @onready var camera_pivot: Node3D = $CameraPivot
 @onready var animation_tree : AnimationTree = %AnimationTree
 @onready var attack_component = %AttackComponent
+@onready var stamina_component = $StaminaComponent
 
 # variables
 var coyote_timer : float = 0.0
@@ -32,9 +33,10 @@ var jump_buffer_timer : float = 0.0
 var is_sprinting : bool = false
 
 # Roll state
-var is_invincible : bool = false
 var roll_started : bool = false  # Флаг, что перекат только начался (для fly roll)
-var iframe_duration : float = 0.4   # Неуязвимость с начала переката
+var iframe_duration : float = 0.4   # Неуязвимость с начала переката (не работает)
+
+signal stamina_changed(new_stam)
 
 
 func _ready() -> void:
@@ -49,7 +51,6 @@ func _input(event: InputEvent) -> void:
 
 	elif event is InputEventMouseButton and event.pressed:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-
 
 ##Процессы больше с движением, прыжком, гравитацией
 func _physics_process(delta):
@@ -112,10 +113,6 @@ func _process_roll() -> void:
 		velocity.x = finite_state_machine.roll_direction.x * ROLL_SPEED
 		velocity.z = finite_state_machine.roll_direction.z * ROLL_SPEED
 		
-
-## Вызывается из AnimationPlayer для управления неуязвимостью
-func set_invincible(value: bool) -> void:
-	is_invincible = value
 
 ##Даёт возможность прыгнуть, если нажал слишком поздно
 func _update_coyote_time(delta: float) -> void:

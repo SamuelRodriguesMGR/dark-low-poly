@@ -17,4 +17,5 @@ func take_damage(attacker : Node3D, damage : float) -> void:
 		
 func set_hp(new_hp : float) -> void:
 	health_points = clamp(new_hp, 0, MAX_HEALTH_POINT)
+	parent.emit_signal("hp_changed", health_points)
 	

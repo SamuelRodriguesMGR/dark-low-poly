@@ -42,5 +42,5 @@ func _on_body_exited(_body):
 	timer.stop()
 
 func _attack(body) -> void:
-	if body != null and body != owner and body.has_node("HealthComponent"):
+	if body != null and body != owner and body.has_node("HealthComponent") and !body.is_invincible:
 		body.get_node("HealthComponent").take_damage(parent, damage_points)

@@ -45,21 +45,27 @@ func _get_transition() -> int:
 				parent.can_move
 				and parent.is_on_floor()
 				and Input.is_action_just_pressed(&"attack")
+				and parent.stamina_component.stamina_points >= 10
 			):
+				parent.stamina_component.stamina_points -= 10
 				return states.attack
 			
 			if (
 				parent.can_move
 				and parent.is_on_floor()
 				and Input.is_action_just_pressed(&"roll")
+				and parent.stamina_component.stamina_points >= 20
 			):
+				parent.stamina_component.stamina_points -= 20
 				return states.roll
 				
 			if (
 				parent.can_move
 				and parent.jump_buffer_timer > 0.0
 				and parent.coyote_timer > 0.0
+				and parent.stamina_component.stamina_points >= 5
 			):
+				parent.stamina_component.stamina_points -= 5
 				return states.jump
 
 		states.attack:
@@ -79,6 +85,7 @@ func _get_transition() -> int:
 		states.roll:
 			var roll_active: bool = animation_tree.get(ROLL_ACTIVE)
 			if not roll_active:
+				parent.is_invincible = false
 				return states.locomotion
 				
 				
